@@ -2,36 +2,39 @@ version: '3.8'
 services:
   nginx:
     image: nginx:latest
+    container_name: nginx_docker_2
     ports:
       - "8000:80"
       # - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - .:/var/www/laravel_10_study:delegated
+      - .:/var/www/laravel_10_study_2:delegated
       # - certbot-etc:/etc/letsencrypt
       # - certbot-var:/var/lib/letsencrypt
     networks:
-      - laravel_10_study
+      - laravel_10_study_2
     restart: always
-  laravel_10_study:
+  laravel_10_study_2:
+    container_name: laravel_10_study_2_docker_2
     build:
       context: . 
       dockerfile: Dockerfile
     ports:
       - "8900:9000"  
     volumes:
-      - .:/var/www/laravel_10_study:delegated
+      - .:/var/www/laravel_10_study_2:delegated
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ./storage:/var/www/laravel_10_study/storage:delegated
-      - ./bootstrap/cache:/var/www/laravel_10_study/bootstrap/cache:delegated
+      - ./storage:/var/www/laravel_10_study_2/storage:delegated
+      - ./bootstrap/cache:/var/www/laravel_10_study_2/bootstrap/cache:delegated
     depends_on:
       - mariadb
       - redis
     networks:
-      - laravel_10_study
+      - laravel_10_study_2
     restart: always
   mariadb:
     image: 'mariadb:11.5.2'
+    container_name: mariadb_docker_2
     command: --max_allowed_packet=2048M
     ports:
       - '3309:3306'
@@ -45,19 +48,19 @@ services:
       - 'mariadb:/var/lib/mysql'
       - ./mariadb/init:/docker-entrypoint-initdb.d
     networks:
-      - laravel_10_study
+      - laravel_10_study_2
     restart: always
   redis:
     image: redis:alpine
-    container_name: laravel_redis
+    container_name: laravel_redis_docker_2
     restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
-      - laravel_10_study
+      - laravel_10_study_2
   swagger-ui:
     image: swaggerapi/swagger-ui:latest
-    container_name: swagger_ui
+    container_name: swagger_ui_docker_2
     ports:
       - "8082:8080"
     environment:
@@ -65,12 +68,12 @@ services:
     volumes:
       - ./storage/api-docs:/api-docs
     networks:
-      - laravel_10_study
+      - laravel_10_study_2
     depends_on:
-      - laravel_10_study
+      - laravel_10_study_2
     restart: always
 networks:
-  laravel_10_study:
+  laravel_10_study_2:
     driver: bridge
 volumes:
   mariadb:

@@ -27,7 +27,7 @@ RUN pecl install xdebug && docker-php-ext-enable xdebug
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/laravel_10_study
+WORKDIR /var/www/laravel_10_study_2
 
 # Copy existing application directory
 COPY . .
@@ -36,16 +36,16 @@ COPY . .
 RUN composer install
 
 # Create storage directory structure
-RUN mkdir -p /var/www/laravel_10_study/storage/logs \
-    && mkdir -p /var/www/laravel_10_study/storage/framework/sessions \
-    && mkdir -p /var/www/laravel_10_study/storage/framework/views \
-    && mkdir -p /var/www/laravel_10_study/storage/framework/cache \
-    && mkdir -p /var/www/laravel_10_study/bootstrap/cache
+RUN mkdir -p /var/www/laravel_10_study_2/storage/logs \
+    && mkdir -p /var/www/laravel_10_study_2/storage/framework/sessions \
+    && mkdir -p /var/www/laravel_10_study_2/storage/framework/views \
+    && mkdir -p /var/www/laravel_10_study_2/storage/framework/cache \
+    && mkdir -p /var/www/laravel_10_study_2/bootstrap/cache
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/laravel_10_study \
-    && chmod -R 777 /var/www/laravel_10_study/storage \
-    && chmod -R 777 /var/www/laravel_10_study/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/laravel_10_study_2 \
+    && chmod -R 777 /var/www/laravel_10_study_2/storage \
+    && chmod -R 777 /var/www/laravel_10_study_2/bootstrap/cache
 
 # Expose port 9000
 EXPOSE 9000

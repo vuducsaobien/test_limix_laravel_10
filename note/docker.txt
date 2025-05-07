@@ -1,0 +1,20 @@
+I. Cách thiết lập môi trường
+    1. docker-compose build
+    2. docker-compose up -d
+    3. .env.example => .env
+
+    4. Truy cập Database DBeaver:
+        Server Host: localhost
+        Port: 3309
+        Database: laravel_10_study
+        Username: root_abc
+        Password: root_abc_password
+
+    5. 
+        docker exec -it laravel_10_study_2_docker_2 sh
+            php artisan key:generate
+            php artisan migrate
+            http://localhost:8000/
+    
+    6. Restore DB file DBeaver
+        File trong folder ./note/database_files_bakup/
