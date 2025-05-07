@@ -1,0 +1,79 @@
+version: '3.8'
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8000:80"
+      # - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - .:/var/www/laravel_10_study:delegated
+      # - certbot-etc:/etc/letsencrypt
+      # - certbot-var:/var/lib/letsencrypt
+    networks:
+      - laravel_10_study
+    restart: always
+  laravel_10_study:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    ports:
+      - "8900:9000"  
+    volumes:
+      - .:/var/www/laravel_10_study:delegated
+      - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./storage:/var/www/laravel_10_study/storage:delegated
+      - ./bootstrap/cache:/var/www/laravel_10_study/bootstrap/cache:delegated
+    depends_on:
+      - mariadb
+      - redis
+    networks:
+      - laravel_10_study
+    restart: always
+  mariadb:
+    image: 'mariadb:11.5.2'
+    command: --max_allowed_packet=2048M
+    ports:
+      - '3309:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'mariadb:/var/lib/mysql'
+      - ./mariadb/init:/docker-entrypoint-initdb.d
+    networks:
+      - laravel_10_study
+    restart: always
+  redis:
+    image: redis:alpine
+    container_name: laravel_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - laravel_10_study
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger_ui
+    ports:
+      - "8082:8080"
+    environment:
+      - SWAGGER_JSON=/api-docs/swagger.json
+    volumes:
+      - ./storage/api-docs:/api-docs
+    networks:
+      - laravel_10_study
+    depends_on:
+      - laravel_10_study
+    restart: always
+networks:
+  laravel_10_study:
+    driver: bridge
+volumes:
+  mariadb:
+    driver: local
+  # certbot-etc:
+  # certbot-var:
